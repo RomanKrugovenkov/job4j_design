@@ -30,6 +30,7 @@ class BoxTest {
     void isExistTrue() {
         Box box = new Box(8, 2);
         boolean rsl = box.isExist();
-        assertThat(rsl).isTrue();
+        assertThat(rsl).isTrue()
+                .isNotNull();
     }
 }
