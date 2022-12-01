@@ -12,18 +12,19 @@ public class MatrixIt implements Iterator<Integer> {
         this.data = data;
     }
 
-    @SuppressWarnings("checkstyle:SimplifyBooleanExpression")
     @Override
     public boolean hasNext() {
+        var rsl = true;
         while (column >= data[row].length) {
             if (row < data.length - 1) {
                 row++;
                 column = 0;
             } else {
-                return false;
+                rsl = false;
+                break;
             }
         }
-        return true;
+        return rsl;
     }
 
     @Override
@@ -34,4 +35,3 @@ public class MatrixIt implements Iterator<Integer> {
         return data[row][column++];
     }
 }
-
