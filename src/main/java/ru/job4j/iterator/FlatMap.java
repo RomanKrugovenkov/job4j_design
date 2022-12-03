@@ -9,17 +9,17 @@ public class FlatMap<T> implements Iterator<T> {
 
     public FlatMap(Iterator<Iterator<T>> data) {
         this.data = data;
-        cursor = StreamSupport.stream(
+    }
+
+    @Override
+    public boolean hasNext() {
+        cursor = cursor.hasNext() ? cursor : StreamSupport.stream(
                         Spliterators.spliteratorUnknownSize(
                                 data, Spliterator.ORDERED), false)
                 .flatMap(itr -> StreamSupport.stream(
                         Spliterators.spliteratorUnknownSize(
                                 itr, Spliterator.ORDERED), false))
                 .toList().iterator();
-    }
-
-    @Override
-    public boolean hasNext() {
         return cursor.hasNext();
     }
 
