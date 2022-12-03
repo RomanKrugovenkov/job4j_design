@@ -1,7 +1,6 @@
 package ru.job4j.iterator;
 
 import java.util.*;
-import java.util.stream.StreamSupport;
 
 public class FlatMap<T> implements Iterator<T> {
     private final Iterator<Iterator<T>> data;
@@ -13,13 +12,9 @@ public class FlatMap<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-        cursor = cursor.hasNext() ? cursor : StreamSupport.stream(
-                        Spliterators.spliteratorUnknownSize(
-                                data, Spliterator.ORDERED), false)
-                .flatMap(itr -> StreamSupport.stream(
-                        Spliterators.spliteratorUnknownSize(
-                                itr, Spliterator.ORDERED), false))
-                .toList().iterator();
+        while (data.hasNext() && !cursor.hasNext()) {
+            cursor = data.next();
+        }
         return cursor.hasNext();
     }
 
