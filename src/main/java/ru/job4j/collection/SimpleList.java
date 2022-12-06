@@ -1,4 +1,4 @@
-package ru.job4j.assertj.collection;
+package ru.job4j.collection;
 
 public interface SimpleList<T> extends Iterable<T> {
     void add(T value);
