@@ -12,12 +12,19 @@ public class SimpleLinkedList<E> implements LinkedList<E> {
     private Node<E> head;
 
     public SimpleLinkedList() {
-        this.head = new Node<>(null, null);
+    }
+
+    public static void main(String[] args) {
+        var list = new SimpleLinkedList<>();
+        list.add(1);
+        list.add(2);
+        System.out.println(list.get(0));
+        System.out.println(list.get(1));
     }
 
     @Override
     public void add(E value) {
-        if (head.item != null) {
+        if (head != null) {
             Node<E> last = head;
             while (last.next != null) {
                 last = last.next;
@@ -46,14 +53,14 @@ public class SimpleLinkedList<E> implements LinkedList<E> {
     public Iterator<E> iterator() {
         return new Iterator<>() {
             private int expectedModCount = modCount;
-            private int num = 0;
+            Node<E> current = head;
 
             @Override
             public boolean hasNext() {
                 if (expectedModCount != modCount) {
                     throw new ConcurrentModificationException();
                 }
-                return num < size;
+                return current != null;
             }
 
             @Override
@@ -61,7 +68,9 @@ public class SimpleLinkedList<E> implements LinkedList<E> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                return get(num++);
+                E rsl = current.item;
+                current = current.next;
+                return rsl;
             }
 
         };
