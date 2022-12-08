@@ -10,9 +10,6 @@ public class ForwardLinked<T> implements Iterable<T> {
     private int modCount = 0;
     private Node<T> head;
 
-    public ForwardLinked() {
-    }
-
     public static void main(String[] args) {
         var list = new ForwardLinked<>();
         list.add(1);
@@ -58,17 +55,17 @@ public class ForwardLinked<T> implements Iterable<T> {
     }
 
     public T deleteFirst() {
-        Node<T> first = head;
         if (head == null) {
             throw new NoSuchElementException();
         }
+        T firstItem = head.item;
         Node<T> second = head.next;
         head.next = null;
         head.item = null;
         head = second;
         modCount++;
         size--;
-        return first.item;
+        return firstItem;
     }
 
     @Override
