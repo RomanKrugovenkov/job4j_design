@@ -38,8 +38,6 @@ public class ListUtils {
     }
 
     public static <T> void removeAll(List<T> list, List<T> elements) {
-        for (T el : elements) {
-            removeIf(list, i -> i.equals(el));
-        }
+        removeIf(list, elements::contains);
     }
 }
