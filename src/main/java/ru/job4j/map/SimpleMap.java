@@ -12,11 +12,11 @@ public class SimpleMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean put(K key, V value) {
-        if (LOAD_FACTOR <= (float) count / capacity) {
+        if (LOAD_FACTOR * capacity <= count) {
             expand();
         }
         boolean rsl = false;
-        int i = key == null ? 0 : indexFor(hash(key.hashCode()));
+        int i = index(key);
         if (table[i] == null) {
             table[i] = new MapEntry<>(key, value);
             rsl = true;
@@ -27,11 +27,15 @@ public class SimpleMap<K, V> implements Map<K, V> {
     }
 
     private int hash(int hashCode) {
-        return hashCode ^ (hashCode >>> capacity);
+        return hashCode ^ (hashCode >>> 16);
     }
 
     private int indexFor(int hash) {
         return hash & (capacity - 1);
+    }
+
+    private int index(K key) {
+        return key == null ? 0 : indexFor(hash(key.hashCode()));
     }
 
     private void expand() {
@@ -40,7 +44,7 @@ public class SimpleMap<K, V> implements Map<K, V> {
         table = new MapEntry[capacity];
         for (MapEntry<K, V> cell : tempTable) {
             if (cell != null) {
-                put(cell.key, cell.value);
+                table[index(cell.key)] = new MapEntry<>(cell.key, cell.value);
                 count--;
             }
         }
@@ -48,16 +52,23 @@ public class SimpleMap<K, V> implements Map<K, V> {
 
     @Override
     public V get(K key) {
-        int i = key == null ? 0 : indexFor(hash(key.hashCode()));
-        return table[i] == null || table[i].key != key
-                ? null : table[i].value;
+        int i = index(key);
+        int hashCodeKey = Objects.hash(key);
+        int hashCodeTable = table[i] == null ? 0 : Objects.hash(table[i].key);
+        return table[i] != null
+                && hashCodeKey == hashCodeTable
+                && table[i].key == key
+                ? table[i].value : null;
     }
 
     @Override
     public boolean remove(K key) {
         boolean rsl = false;
-        int i = key == null ? 0 : indexFor(hash(key.hashCode()));
-        if (table[i] != null) {
+        int i = index(key);
+        int hashCodeKey = Objects.hash(key);
+        int hashCodeTable = table[i] == null ? 0 : Objects.hash(table[i].key);
+        if (hashCodeKey == hashCodeTable
+                && table[i].key == key) {
             table[i] = null;
             rsl = true;
             count--;
