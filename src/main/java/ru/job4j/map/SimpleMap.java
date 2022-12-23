@@ -1,6 +1,9 @@
 package ru.job4j.map;
 
-import java.util.*;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class SimpleMap<K, V> implements Map<K, V> {
 
@@ -55,9 +58,11 @@ public class SimpleMap<K, V> implements Map<K, V> {
         int i = index(key);
         int hashCodeKey = Objects.hash(key);
         int hashCodeTable = table[i] == null ? 0 : Objects.hash(table[i].key);
-        return table[i] != null
+        return key == null
+                && table[i].key == null
+                || key != null
                 && hashCodeKey == hashCodeTable
-                && table[i].key == key
+                && key.equals(table[i].key)
                 ? table[i].value : null;
     }
 
@@ -67,8 +72,11 @@ public class SimpleMap<K, V> implements Map<K, V> {
         int i = index(key);
         int hashCodeKey = Objects.hash(key);
         int hashCodeTable = table[i] == null ? 0 : Objects.hash(table[i].key);
-        if (hashCodeKey == hashCodeTable
-                && table[i].key == key) {
+        if (key == null
+                && table[i].key == null
+                || key != null
+                && hashCodeKey == hashCodeTable
+                && key.equals(table[i].key)) {
             table[i] = null;
             rsl = true;
             count--;
@@ -119,7 +127,7 @@ public class SimpleMap<K, V> implements Map<K, V> {
             if (this == o) {
                 return true;
             }
-            if (o == null || getClass() != o.getClass()) {
+            if (getClass() != o.getClass()) {
                 return false;
             }
             MapEntry<?, ?> mapEntry = (MapEntry<?, ?>) o;
