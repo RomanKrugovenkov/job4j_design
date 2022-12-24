@@ -1,6 +1,8 @@
 package ru.job4j.tree;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.Queue;
 
 public class SimpleTree<E> implements Tree<E> {
     private final Node<E> root;
@@ -10,11 +12,23 @@ public class SimpleTree<E> implements Tree<E> {
     }
 
     @Override
+    public boolean isBinary() {
+        int count = 0;
+        Queue<Node<E>> data = new LinkedList<>();
+        data.offer(this.root);
+        while (!data.isEmpty()) {
+            Node<E> el = data.poll();
+            count = Math.max(el.children.size(), count);
+            data.addAll(el.children);
+        }
+        return count <= 2;
+    }
+
+    @Override
     public boolean add(E parent, E child) {
         boolean rsl = false;
         Optional<Node<E>> nodeParent = findBy(parent);
-        if (findBy(child).isEmpty()
-                && nodeParent.isPresent()) {
+        if (findBy(child).isEmpty() && nodeParent.isPresent()) {
             nodeParent.get().children.add(new Node<>(child));
             rsl = true;
         }
