@@ -41,6 +41,14 @@ public class SimpleMap<K, V> implements Map<K, V> {
         return key == null ? 0 : indexFor(hash(key.hashCode()));
     }
 
+    private boolean keysEquals(K key) {
+        int i = index(key);
+        int hashCodeKey = Objects.hashCode(key);
+        int hashCodeTable = table[i] == null ? 0 : Objects.hashCode(table[i].key);
+        return Objects.equals(hashCodeKey, hashCodeTable)
+                && Objects.equals(key, table[i].key);
+    }
+
     private void expand() {
         MapEntry<K, V>[] tempTable = table;
         capacity = capacity * 2;
@@ -55,29 +63,14 @@ public class SimpleMap<K, V> implements Map<K, V> {
 
     @Override
     public V get(K key) {
-        int i = index(key);
-        int hashCodeKey = Objects.hash(key);
-        int hashCodeTable = table[i] == null ? 0 : Objects.hash(table[i].key);
-        return key == null
-                && table[i].key == null
-                || key != null
-                && hashCodeKey == hashCodeTable
-                && key.equals(table[i].key)
-                ? table[i].value : null;
+        return keysEquals(key) ? table[index(key)].value : null;
     }
 
     @Override
     public boolean remove(K key) {
         boolean rsl = false;
-        int i = index(key);
-        int hashCodeKey = Objects.hash(key);
-        int hashCodeTable = table[i] == null ? 0 : Objects.hash(table[i].key);
-        if (key == null
-                && table[i].key == null
-                || key != null
-                && hashCodeKey == hashCodeTable
-                && key.equals(table[i].key)) {
-            table[i] = null;
+        if (keysEquals(key)) {
+            table[index(key)] = null;
             rsl = true;
             count--;
             modCount++;
