@@ -1,7 +1,6 @@
 package ru.job4j.io;
 
 import java.io.FileOutputStream;
-import java.util.Arrays;
 
 public class ResultFile {
     public static void main(String[] args) {
@@ -11,8 +10,8 @@ public class ResultFile {
             for (int row = 0; row < size; row++) {
                 for (int cell = 0; cell < size; cell++) {
                     array[row][cell] = (row + 1) * (cell + 1);
+                    out.write(String.valueOf(array[row][cell]).concat(" ").getBytes());
                 }
-                out.write(Arrays.toString(array[row]).getBytes());
                 out.write(System.lineSeparator().getBytes());
 
             }
