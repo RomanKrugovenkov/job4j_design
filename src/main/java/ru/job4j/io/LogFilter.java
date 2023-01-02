@@ -22,7 +22,7 @@ public class LogFilter {
                         return "404".equals(temp[temp.length - 2]);
                     })
                     .collect(Collectors.toList());
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return rsl;
@@ -31,7 +31,7 @@ public class LogFilter {
     public static void save(List<String> log, String file) {
         try (PrintWriter out = new PrintWriter(file)) {
             log.forEach(out::println);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
