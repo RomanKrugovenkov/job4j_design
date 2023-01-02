@@ -15,4 +15,12 @@ class ConfigTest {
         assertThat(config.value("Ivan")).isEqualTo("Ivanov");
         assertThat(config.value("Roman")).isEqualTo("Romanov=1");
     }
+
+    @Test
+    void whenPairWithException() {
+        String path = "./data/pairWithException.properties";
+        Config config = new Config(path);
+        assertThatThrownBy(config::load)
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }

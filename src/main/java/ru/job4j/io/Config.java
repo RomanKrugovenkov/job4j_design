@@ -35,7 +35,7 @@ public class Config {
                     values.put(strArray[0], strArray[1]);
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
