@@ -19,10 +19,7 @@ public class Analysis {
                 if (offTime == null && ("400".equals(strArray[0]) || "500".equals(strArray[0]))) {
                     offTime = strArray[1];
                 } else if (offTime != null && "200".equals(strArray[0]) || "300".equals(strArray[0])) {
-                    out.append(offTime);
-                    out.append(";");
-                    out.append(strArray[1]);
-                    out.append(";");
+                    out.append(offTime).append(";").append(strArray[1]).append(";");
                     out.newLine();
                     offTime = null;
                 }
