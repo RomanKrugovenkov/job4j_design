@@ -9,6 +9,9 @@ public class ArgsName {
     private final Map<String, String> values = new HashMap<>();
 
     public static ArgsName of(String[] args) {
+        if (args.length == 0) {
+            throw new IllegalArgumentException("args is null");
+        }
         ArgsName names = new ArgsName();
         names.parse(args);
         return names;
@@ -30,9 +33,6 @@ public class ArgsName {
     }
 
     private void parse(String[] args) {
-        if (args.length == 0) {
-            throw new IllegalArgumentException("args is null");
-        }
         for (var str : args) {
             Pattern pattern = Pattern.compile("-\\S{1,}=\\S{1,}");
             if (!pattern.matcher(str).find()) {
