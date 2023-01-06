@@ -12,18 +12,17 @@ import java.util.zip.ZipOutputStream;
 public class Zip {
 
     public static void main(String[] args) throws IOException {
-        validation(args);
+        if (args.length < 3) {
+            throw new IllegalArgumentException("Not enough arguments. Usage  ROOT_FOLDER.");
+        }
         ArgsName argsName = ArgsName.of(args);
+        validation(argsName);
         Predicate<Path> predicate = path -> !path.toFile().getName().endsWith(getExtension(argsName));
         var paths = searchFilesByPredicate(getSource(argsName), predicate);
         packFiles(paths, getTarget(argsName));
     }
 
-    private static void validation(String[] args) {
-        if (args.length < 3) {
-            throw new IllegalArgumentException("Not enough arguments. Usage  ROOT_FOLDER.");
-        }
-        ArgsName argsName = ArgsName.of(args);
+    private static void validation(ArgsName argsName) {
         if (!getSource(argsName).toFile().isDirectory()) {
             throw new IllegalArgumentException(String.format("Not directory %s", getSource(argsName)));
         }
