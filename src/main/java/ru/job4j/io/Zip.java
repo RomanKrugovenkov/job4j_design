@@ -1,23 +1,43 @@
 package ru.job4j.io;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class Zip {
 
     public static void main(String[] args) throws IOException {
-        var files = searchFilesWithout(getSource(args), getExtension(args));
-        packFiles(files, getTarget(args));
+        validation(args);
+        ArgsName argsName = ArgsName.of(args);
+        Predicate<Path> predicate = path -> !path.toFile().getName().endsWith(getExtension(argsName));
+        var paths = searchFilesByPredicate(getSource(argsName), predicate);
+        packFiles(paths, getTarget(argsName));
     }
 
-    public static List<Path> searchFilesWithout(Path source, String extension) throws IOException {
-        Predicate<Path> predicate = path -> path.toFile().getName().endsWith(extension);
+    private static void validation(String[] args) {
+        if (args.length < 3) {
+            throw new IllegalArgumentException("Not enough arguments. Usage  ROOT_FOLDER.");
+        }
+        ArgsName argsName = ArgsName.of(args);
+        if (!getSource(argsName).toFile().isDirectory()) {
+            throw new IllegalArgumentException(String.format("Not directory %s", getSource(argsName)));
+        }
+        Pattern patternEx = Pattern.compile("\\.\\S{1,}");
+        if (!patternEx.matcher(getExtension(argsName)).find()) {
+            throw new IllegalArgumentException(String.format("Not file extension \"%s\"", getExtension(argsName)));
+        }
+        Pattern patternName = Pattern.compile("\\S{1,}\\.\\S{1,}");
+        if (!patternName.matcher(getTarget(argsName).toString()).find()) {
+            throw new IllegalArgumentException(String.format("Not file name \"%s\"", getTarget(argsName)));
+        }
+    }
+
+    public static List<Path> searchFilesByPredicate(Path source, Predicate<Path> predicate) throws IOException {
         return Search.search(source, predicate);
     }
 
@@ -34,18 +54,15 @@ public class Zip {
         }
     }
 
-    public static Path getSource(String[] args) {
-        ArgsName parameters = ArgsName.of(args);
-        return Paths.get(parameters.get("d"));
+    public static Path getSource(ArgsName argsName) {
+        return Paths.get(argsName.get("d"));
     }
 
-    public static File getTarget(String[] args) {
-        ArgsName parameters = ArgsName.of(args);
-        return Paths.get(parameters.get("d")).toFile();
+    public static File getTarget(ArgsName argsName) {
+        return Paths.get(argsName.get("o")).toFile();
     }
 
-    public static String getExtension(String[] args) {
-        ArgsName parameters = ArgsName.of(args);
-        return parameters.get("e");
+    public static String getExtension(ArgsName argsName) {
+        return argsName.get("e");
     }
 }
