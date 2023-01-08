@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EchoServer {
     public static void main(String[] args) throws IOException {
@@ -15,17 +17,25 @@ public class EchoServer {
                 try (OutputStream out = socket.getOutputStream();
                      BufferedReader in = new BufferedReader(
                              new InputStreamReader(socket.getInputStream()))) {
-                    out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
                     String str = in.readLine();
-                    if (str.contains("msg=Bye")) {
-                        System.out.println("Server close");
-                        server.close();
-                    } else {
-                        System.out.println(str);
+                    Matcher matcher = Pattern.compile("msg=\\S{1,}").matcher(str);
+                    while (matcher.find()) {
+                        String rsl = matcher.group();
+                        String msg = rsl.substring(4);
+                        out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
+                        String answer = switch (msg) {
+                            case "Hello":
+                                yield "Hello";
+                            case "Exit":
+                                server.close();
+                                yield "Shut down the server";
+                            default:
+                                yield msg;
+                        };
+                        out.write(answer.getBytes());
+                        out.flush();
                     }
-                    out.flush();
                 }
-
             }
         }
     }
