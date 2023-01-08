@@ -21,33 +21,27 @@ public class CSVReader {
     }
 
     public static void handle(ArgsName argsName) {
-        validation(argsName);
         List<String[]> linesList = new ArrayList<>();
-        try (var scanner = new Scanner(getPath(argsName)).useDelimiter(System.lineSeparator())) {
+        try (var scanner = new Scanner(getPath(argsName)).useDelimiter(System.lineSeparator());
+             BufferedWriter out = new BufferedWriter(new FileWriter(getOut(argsName).toFile()))) {
             while (scanner.hasNext()) {
                 var strArray = scanner.next().split(getDelimiter(argsName));
                 linesList.add(strArray);
             }
             var indexList = getIndex(argsName, linesList.get(0));
-            if ("stdout".equals(getOut(argsName).toString())) {
-                for (var line : linesList) {
-                    for (var i : indexList) {
-                        String del = i.equals(indexList.get(indexList.size() - 1)) ? "" : getDelimiter(argsName);
+            for (var line : linesList) {
+                for (var i : indexList) {
+                    String del = i.equals(indexList.get(indexList.size() - 1)) ? "" : getDelimiter(argsName);
+                    if ("stdout".equals(getOut(argsName).toString())) {
                         System.out.print(line[i] + del);
+                    } else {
+                        out.write(line[i] + del);
                     }
-                    System.out.println();
                 }
-            } else {
-                try (BufferedWriter out = new BufferedWriter(new FileWriter(getOut(argsName).toFile()))) {
-                    for (var line : linesList) {
-                        for (var i : indexList) {
-                            String del = i.equals(indexList.get(indexList.size() - 1)) ? "" : getDelimiter(argsName);
-                            out.write(line[i] + del);
-                        }
-                        out.newLine();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if ("stdout".equals(getOut(argsName).toString())) {
+                    System.out.println();
+                } else {
+                    out.newLine();
                 }
             }
         } catch (IOException e) {
