@@ -28,7 +28,7 @@ public class RegularExpression {
 
         System.out.println("Поиск формата эл.почты:");
         Pattern pattern3 = Pattern.compile("\\S{1,}@\\S{1,}\\.\\S{1,}");
-        String text3 = "peter-2022@example.com example65@mail_box.ru 123_45@example-mailbox.com";
+        String text3 = "peter-2022%example.com example65%mail_box.ru 123_45%example-mailbox.com";
         Matcher matcher3 = pattern3.matcher(text3);
         while (matcher3.find()) {
             System.out.println("Найдено совпадение: " + matcher3.group());
