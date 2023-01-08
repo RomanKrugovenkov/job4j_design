@@ -11,26 +11,44 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class CSVReader {
 
-    public static void handle(ArgsName argsName) throws Exception {
+    public static void main(String[] args) {
+        ArgsName argsName = ArgsName.of(args);
+        validation(argsName);
+        handle(argsName);
+    }
+
+    public static void handle(ArgsName argsName) {
         validation(argsName);
         List<String[]> linesList = new ArrayList<>();
-        var scanner = new Scanner(getPath(argsName)).useDelimiter(System.lineSeparator());
-        while (scanner.hasNext()) {
-            var strArray = scanner.next().split(getDelimiter(argsName));
-            linesList.add(strArray);
-        }
-        try (BufferedWriter out = new BufferedWriter(new FileWriter(getOut(argsName).toFile()))) {
+        try (var scanner = new Scanner(getPath(argsName)).useDelimiter(System.lineSeparator())) {
+            while (scanner.hasNext()) {
+                var strArray = scanner.next().split(getDelimiter(argsName));
+                linesList.add(strArray);
+            }
             var indexList = getIndex(argsName, linesList.get(0));
-            for (var line : linesList) {
-                for (var i : indexList) {
-                    String del = i.equals(indexList.get(indexList.size() - 1)) ? "" : getDelimiter(argsName);
-                    out.write(line[i] + del);
+            if ("stdout".equals(getOut(argsName).toString())) {
+                for (var line : linesList) {
+                    for (var i : indexList) {
+                        String del = i.equals(indexList.get(indexList.size() - 1)) ? "" : getDelimiter(argsName);
+                        System.out.print(line[i] + del);
+                    }
+                    System.out.println();
                 }
-                out.newLine();
+            } else {
+                try (BufferedWriter out = new BufferedWriter(new FileWriter(getOut(argsName).toFile()))) {
+                    for (var line : linesList) {
+                        for (var i : indexList) {
+                            String del = i.equals(indexList.get(indexList.size() - 1)) ? "" : getDelimiter(argsName);
+                            out.write(line[i] + del);
+                        }
+                        out.newLine();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -38,15 +56,13 @@ public class CSVReader {
     }
 
     private static void validation(ArgsName argsName) {
-        Pattern patternName = Pattern.compile("\\S{1,}\\.\\S{1,}");
-        if (!patternName.matcher(getPath(argsName).toString()).find()) {
-            throw new IllegalArgumentException(String.format("Not file name \"%s\"", getPath(argsName)));
+        if (!getPath(argsName).toFile().exists()) {
+            throw new IllegalArgumentException(String.format("Not path file \"%s\"", getPath(argsName)));
         }
-        if (!patternName.matcher(getOut(argsName).toString()).find()) {
-            throw new IllegalArgumentException(String.format("Not file name \"%s\"", getOut(argsName)));
+        if (!getOut(argsName).toFile().isAbsolute() && !"stdout".equals(getOut(argsName).toString())) {
+            throw new IllegalArgumentException(String.format("Out is incorrect \"%s\"", getOut(argsName)));
         }
-        Pattern patternSim = Pattern.compile("\\D");
-        if (!patternSim.matcher(getDelimiter(argsName)).find()) {
+        if (!";".equals(getDelimiter(argsName)) && !",".equals(getDelimiter(argsName))) {
             throw new IllegalArgumentException(String.format("Not delimiter \"%s\"", getDelimiter(argsName)));
         }
     }
@@ -70,6 +86,9 @@ public class CSVReader {
         for (var filter : filters) {
             var i = columnsList.indexOf(filter);
             indexList.add(i);
+        }
+        if (indexList.contains(-1)) {
+            throw new IllegalArgumentException(String.format("Filters is incorrect \"%s\"", argsName.get("filter")));
         }
         return indexList;
     }
