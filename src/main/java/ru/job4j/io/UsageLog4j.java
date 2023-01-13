@@ -26,5 +26,12 @@ public class UsageLog4j {
         LOG.info("info message : status {}, byteNum : {}", bool, byteNum);
         LOG.warn("warn message : shortNum {}, intNum : {}", shortNum, intNum);
         LOG.error("error message : longNum {}, floatNum : {}, doubleNum : {}", longNum, floatNum, doubleNum);
+        System.out.println("Перенаправление исключения в log:");
+        try {
+            throw new Exception("Not supported code");
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("Exception in log example", e);
+        }
     }
 }
