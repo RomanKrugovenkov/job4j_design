@@ -19,4 +19,8 @@ public class Contact {
     public String toString() {
         return "Contact{" + "phone='" + phone + '\'' + '}';
     }
+
+    public String getPhone() {
+        return phone;
+    }
 }
