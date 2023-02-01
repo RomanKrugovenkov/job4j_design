@@ -7,7 +7,7 @@ create table fauna
 );
 
 insert into fauna(name, avg_age, discovery_date)
-values ('big fish', 900, '01.06.1960'),
-       ('leopard', 5000, '10.02.1850'),
-       ('elephant', 15000, '11.11.1855'),
+values ('big fish', 900, '1960.06.01'),
+       ('leopard', 5000, '1850.02.10'),
+       ('elephant', 15000, '1855.11.11'),
        ('eagle', 3500, null);

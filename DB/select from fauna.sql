@@ -12,4 +12,4 @@ WHERE discovery_date IS NULL;
 
 SELECT *
 FROM fauna
-WHERE discovery_date < '01.01.1950';
+WHERE discovery_date < '1950.01.01';
