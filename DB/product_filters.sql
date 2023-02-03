@@ -13,11 +13,10 @@ from product p
          join type t on t.id = p.type_id
 where p.expired_date < current_date;
 
-select p.price, p.name, t.name
+select p.name, t.name, p.price
 from product p
          join type t on t.id = p.type_id
-order by p.price desc
-limit 1;
+where p.price = (Select MAX(price) from product);
 
 select t.name product_type, count(t.name) Count_Of_Type
 from product p
@@ -33,7 +32,7 @@ select t.name product_type, count(t.name) Count_Of_Type
 from product p
          join type t on t.id = p.type_id
 group by t.name
-having count(t.name) < 3;
+having count(t.name) < 10;
 
 select p.name, t.name
 from product p

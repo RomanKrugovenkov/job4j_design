@@ -28,3 +28,6 @@ values (1, 'milk', '2023.02.10', 2.5),
        (3, 'beef', '2023.02.07', 12.5),
        (4, 'ice-cream', '2023.01.22', 1.9),
        (4, 'cookies', '2023.03.01', 1.2);
+
+insert into product(type_id, name, expired_date, price)
+values (2, 'Cheddar', '2023.06.10', 12.5);
