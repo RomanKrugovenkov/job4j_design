@@ -53,16 +53,17 @@ declare
     result varchar;
 begin
     if d_id > 0 THEN
-        delete from products where id = d_id;
         select into result name from products where id = d_id;
+        delete from products where id = d_id;
     end if;
     if d_count_less > 0 THEN
+        select into result count(*) from products where count < d_count_less;
         delete from products where count < d_count_less;
-        select into result name from products;
     end if;
     return result;
 end;
 $$;
 
 --вызов хр функции удаления
-select f_del_data(2, 10);
+select f_del_data(1, 0);
+select f_del_data(0, 10);
