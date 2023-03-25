@@ -21,3 +21,7 @@ fetch prior from cursor_products;
 move backward 4 from cursor_products;
 fetch prior from cursor_products;
 fetch prior from cursor_products;
+
+CLOSE cursor_products;
+
+COMMIT;
