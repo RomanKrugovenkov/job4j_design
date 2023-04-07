@@ -1,9 +1,10 @@
-package ru.job4j.jdbс;
+package ru.job4j.jdbc;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
 import ru.job4j.io.Config;
 
 public class ConnectionDemo {
