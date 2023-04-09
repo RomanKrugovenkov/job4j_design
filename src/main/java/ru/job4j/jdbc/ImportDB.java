@@ -1,10 +1,7 @@
 package ru.job4j.jdbc;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -24,10 +21,10 @@ public class ImportDB {
         try (BufferedReader rd = new BufferedReader(new FileReader(dump))) {
             rd.lines().forEach(str -> {
                         var temp = str.split(";");
-                        if (temp.length == 2 && temp[0].length() > 1 && temp[1].length() > 6) {
-                            users.add(new User(temp[0], temp[1]));
-                        } else {
+                        if (temp.length != 2 || temp[0].length() == 0 || temp[1].length() < 6) {
                             throw new IllegalArgumentException("argument is null");
+                        } else {
+                            users.add(new User(temp[0], temp[1]));
                         }
                     }
             );
@@ -35,38 +32,28 @@ public class ImportDB {
         return users;
     }
 
-    /*public void create(String tableName, String idName, String clm1Name, String clm2Name) throws ClassNotFoundException, SQLException {
+    public Connection connection() throws Exception {
         Class.forName(cfg.getProperty("jdbc.driver"));
-        try (Connection cnt = DriverManager.getConnection(
+        return DriverManager.getConnection(
                 cfg.getProperty("jdbc.url"),
                 cfg.getProperty("jdbc.username"),
                 cfg.getProperty("jdbc.password")
-        )) {
-            try (PreparedStatement ps = cnt.prepareStatement(
-                    "CREATE TABLE IF NOT EXISTS ? (?, ?, ?)")) {
-                ps.setString(1, tableName);
-                ps.setString(2, idName);
-                ps.setString(3, clm1Name);
-                ps.setString(4, clm2Name);
-                ps.execute();
-            }
-        }
-    }*/
+        );
+    }
 
-    public void save(List<User> users) throws ClassNotFoundException, SQLException {
-        Class.forName(cfg.getProperty("jdbc.driver"));
-        try (Connection cnt = DriverManager.getConnection(
-                cfg.getProperty("jdbc.url"),
-                cfg.getProperty("jdbc.username"),
-                cfg.getProperty("jdbc.password")
-        )) {
-            for (User user : users) {
-                try (PreparedStatement ps = cnt.prepareStatement(
-                        "INSERT INTO users(name, email) VALUES (?, ?)")) {
-                    ps.setString(1, user.name);
-                    ps.setString(2, user.email);
-                    ps.execute();
-                }
+    public void create(String tableName, String id, String clm1, String clm2) throws Exception {
+        connection().createStatement().execute(
+                String.format("CREATE TABLE IF NOT EXISTS %s(%s, %s, %s);", tableName, id, clm1, clm2)
+        );
+    }
+
+    public void save(List<User> users) throws Exception {
+        for (User user : users) {
+            try (PreparedStatement ps = connection().prepareStatement(
+                    "INSERT INTO users(name, email) VALUES (?, ?)")) {
+                ps.setString(1, user.name);
+                ps.setString(2, user.email);
+                ps.execute();
             }
         }
     }
@@ -87,7 +74,7 @@ public class ImportDB {
             cfg.load(in);
         }
         ImportDB db = new ImportDB(cfg, "src/main/java/ru/job4j/jdbc/dump.txt");
-        /*db.create("users", "id SERIAL PRIMARY KEY", "name TEXT", "email TEXT");*/
+        db.create("users", "id SERIAL PRIMARY KEY", "name TEXT", "email TEXT");
         db.save(db.load());
     }
 }
