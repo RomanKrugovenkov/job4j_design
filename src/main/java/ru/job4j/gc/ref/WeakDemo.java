@@ -10,11 +10,10 @@ import java.util.concurrent.TimeUnit;
 public class WeakDemo {
 
     public static void main(String[] args) throws InterruptedException {
-        //example1();
+        example1();
         example2();
     }
 
-    //weak объекты удаляются после обнуления сильной ссылки
     private static void example1() throws InterruptedException {
         Object object = new Object() {
             @Override
@@ -29,7 +28,6 @@ public class WeakDemo {
         System.out.println(weak.get());
     }
 
-    //weak объекты без сильных ссылок удаляются при запуске GC
     private static void example2() throws InterruptedException {
         List<WeakReference<Object>> objects = new ArrayList<>();
         for (int i = 0; i < 100; i++) {

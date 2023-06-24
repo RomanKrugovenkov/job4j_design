@@ -7,7 +7,7 @@ import java.util.List;
 public class SoftDemo {
 
     public static void main(String[] args) {
-        //example1();
+        example1();
         example2();
     }
 
@@ -18,7 +18,6 @@ public class SoftDemo {
         System.out.println(soft.get());
     }
 
-    //при создании большого числа объектов, GC произведет очистку softRef при заполнении памяти
     private static void example2() {
         List<SoftReference<Object>> objects = new ArrayList<>();
         for (int i = 0; i < 100_000_000; i++) {
