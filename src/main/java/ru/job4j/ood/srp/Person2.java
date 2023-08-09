@@ -15,6 +15,7 @@ public class Person2 {
 
     public void writeToFile(Person2 person2) {
         try (BufferedWriter out = new BufferedWriter(new FileWriter("path"))) {
+            System.out.println();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,6 @@
 package ru.job4j.ood.srp;
 
-public class numSumAndEven1 {
+public class NumSumAndEven1 {
 
     public int sum(int a, int b) {
         return a + b;
