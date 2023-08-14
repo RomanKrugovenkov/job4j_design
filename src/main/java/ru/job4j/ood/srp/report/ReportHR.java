@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class ReportHR implements Report{
+public class ReportHR implements Report {
 
     private final Store store;
 
