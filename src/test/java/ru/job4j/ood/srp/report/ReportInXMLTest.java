@@ -9,6 +9,7 @@ import ru.job4j.ood.srp.store.MemStore;
 import javax.xml.bind.JAXBException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,24 +20,37 @@ class ReportInXMLTest {
         MemStore store = new MemStore();
         Calendar now = Calendar.getInstance();
         Employee worker1 = new Employee("Ivan", now, now, 100);
+        Employee worker2 = new Employee("Roman", now, now, 200);
         DateTimeParser<Calendar> parser = new ReportDateTimeParser();
         store.add(worker1);
+        store.add(worker2);
         Report reportInXML = new ReportInXML(store, parser);
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
-        StringBuilder expect = new StringBuilder()
-                .append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>")
-                .append(System.lineSeparator())
-                .append("<employee name=\"").append(worker1.getName()).append("\">")
-                .append(System.lineSeparator())
-                .append("    <hired>").append(new SimpleDateFormat(pattern).format(now.getTime())).append("</hired>")
-                .append(System.lineSeparator())
-                .append("    <fired>").append(new SimpleDateFormat(pattern).format(now.getTime())).append("</fired>")
-                .append(System.lineSeparator())
-                .append("    <salary>").append(worker1.getSalary()).append("</salary>")
-                .append(System.lineSeparator()).append("</employee>")
-                .append(System.lineSeparator());
+        String expect = String.format(Locale.ROOT,
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <employee name="%s">
+                    <hired>%s</hired>
+                    <fired>%s</fired>
+                    <salary>%.1f</salary>
+                </employee>
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <employee name="%s">
+                    <hired>%s</hired>
+                    <fired>%s</fired>
+                    <salary>%.1f</salary>
+                </employee>
+                """,
+                worker1.getName(),
+                new SimpleDateFormat(pattern).format(now.getTime()),
+                new SimpleDateFormat(pattern).format(now.getTime()),
+                worker1.getSalary(),
+                worker2.getName(),
+                new SimpleDateFormat(pattern).format(now.getTime()),
+                new SimpleDateFormat(pattern).format(now.getTime()),
+                worker2.getSalary());
         System.out.println(expect);
         System.out.println(reportInXML.generate(em -> true));
-        /*assertThat(reportInXML.generate(em -> true)).isEqualTo(expect.toString());*/
+        assertThat(reportInXML.generate(em -> true)).isEqualTo(expect.toString());
     }
 }
