@@ -1,6 +1,7 @@
 package ru.job4j.ood.srp.model;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.*;
@@ -72,5 +73,28 @@ public class Employee {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    @XmlRootElement(name = "employees")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Employees {
+
+        @XmlElement(name = "employee")
+        private List<Employee> employees = null;
+
+        public Employees() {
+        }
+
+        public Employees(List<Employee> employees) {
+            this.employees = employees;
+        }
+
+        public List<Employee> getEmployees() {
+            return employees;
+        }
+
+        public void setEmployees(List<Employee> employees) {
+            this.employees = employees;
+        }
     }
 }
