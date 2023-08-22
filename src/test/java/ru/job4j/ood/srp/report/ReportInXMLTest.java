@@ -28,19 +28,20 @@ class ReportInXMLTest {
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
         String expect = String.format(Locale.ROOT,
                 """
-                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-                <employee name="%s">
-                    <hired>%s</hired>
-                    <fired>%s</fired>
-                    <salary>%.1f</salary>
-                </employee>
-                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-                <employee name="%s">
-                    <hired>%s</hired>
-                    <fired>%s</fired>
-                    <salary>%.1f</salary>
-                </employee>
-                """,
+                        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                        <employees>
+                            <employee name="%s">
+                                <hired>%s</hired>
+                                <fired>%s</fired>
+                                <salary>%.1f</salary>
+                            </employee>
+                            <employee name="%s">
+                                <hired>%s</hired>
+                                <fired>%s</fired>
+                                <salary>%.1f</salary>
+                            </employee>
+                        </employees>
+                        """,
                 worker1.getName(),
                 new SimpleDateFormat(pattern).format(now.getTime()),
                 new SimpleDateFormat(pattern).format(now.getTime()),
@@ -49,8 +50,6 @@ class ReportInXMLTest {
                 new SimpleDateFormat(pattern).format(now.getTime()),
                 new SimpleDateFormat(pattern).format(now.getTime()),
                 worker2.getSalary());
-        System.out.println(expect);
-        System.out.println(reportInXML.generate(em -> true));
-        assertThat(reportInXML.generate(em -> true)).isEqualTo(expect.toString());
+        assertThat(reportInXML.generate(em -> true)).isEqualTo(expect);
     }
 }

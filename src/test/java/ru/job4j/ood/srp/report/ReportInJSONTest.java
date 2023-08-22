@@ -6,7 +6,6 @@ import ru.job4j.ood.srp.formatter.ReportDateTimeParser;
 import ru.job4j.ood.srp.model.Employee;
 import ru.job4j.ood.srp.store.MemStore;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -19,31 +18,23 @@ class ReportInJSONTest {
         MemStore store = new MemStore();
         Calendar now = Calendar.getInstance();
         Employee worker1 = new Employee("Ivan", now, now, 100);
+        Employee worker2 = new Employee("Roman", now, now, 200);
         DateTimeParser<Calendar> parser = new ReportDateTimeParser();
         store.add(worker1);
+        store.add(worker2);
         Report reportInJSON = new ReportInJSON(store, parser);
+        System.out.println(reportInJSON.generate(em -> true));
+        System.out.println(parser.parse(worker1.getHired()));
         String expect = String.format(Locale.ROOT,
-                "[{\"name\":\"%s\",\"hired\":{\"year\":%s,\"month\":%s,\"dayOfMonth\":%s,\"hourOfDay\":%s,\"minute\":%s,\"second\":%s},"
-                        + "\"fired\":{\"year\":%s,\"month\":%s,\"dayOfMonth\":%s,\"hourOfDay\":%s,\"minute\":%s,\"second\":%s},\"salary\":%.1f}]",
+                "[{\"name\":\"%s\",\"hired\":\"%s\",\"fired\":\"%s\",\"salary\":%.1f},{\"name\":\"%s\",\"hired\":\"%s\",\"fired\":\"%s\",\"salary\":%.1f}]",
                 worker1.getName(),
-                worker1.getHired().get(Calendar.YEAR),
-                worker1.getHired().get(Calendar.MONTH),
-                worker1.getHired().get(Calendar.DAY_OF_MONTH),
-                worker1.getHired().get(Calendar.HOUR_OF_DAY),
-                worker1.getHired().get(Calendar.MINUTE),
-                worker1.getHired().get(Calendar.SECOND),
-                worker1.getFired().get(Calendar.YEAR),
-                worker1.getFired().get(Calendar.MONTH),
-                worker1.getFired().get(Calendar.DAY_OF_MONTH),
-                worker1.getFired().get(Calendar.HOUR_OF_DAY),
-                worker1.getFired().get(Calendar.MINUTE),
-                worker1.getFired().get(Calendar.SECOND),
-                worker1.getSalary());
-        System.out.println(expect);
-
-        String pattern = "'\"year\":'yyyy',\"month\":'M',\"dayOfMonth\":'dd',\"hourOfDay\":'H',\"minute\":'m',\"second\":'ss";
-        System.out.println(new SimpleDateFormat(pattern).format(worker1.getHired().getTime()));
-
+                parser.parse(worker1.getHired()),
+                parser.parse(worker1.getFired()),
+                worker1.getSalary(),
+                worker2.getName(),
+                parser.parse(worker2.getHired()),
+                parser.parse(worker2.getFired()),
+                worker2.getSalary());
         assertThat(reportInJSON.generate(em -> true)).isEqualTo(expect);
     }
 }
