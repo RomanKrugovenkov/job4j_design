@@ -7,6 +7,6 @@ public class DistributorCar {
     public void distribute(Car car, List<Parking> parkingList) {
     }
 
-    public void distList(List<Car> carList, List<Parking> parkingList) {
+    public void distList(List<Car> carList, List<AbstrParking> parkingList) {
     }
 }
