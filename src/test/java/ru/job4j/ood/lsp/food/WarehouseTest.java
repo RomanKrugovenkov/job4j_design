@@ -18,8 +18,6 @@ class WarehouseTest {
         Food cheese = new Food("cheese", LocalDate.of(2023, 10, 25), LocalDate.of(2023, 8, 15), 200, 10);
         var foodList = List.of(apple, meat, bread, cheese);
         AbstractStore wareHouse = new Warehouse();
-        AbstractStore shop = new Shop();
-        AbstractStore trash = new Trash();
         for (Food food : foodList) {
             wareHouse.addStore(food);
         }
