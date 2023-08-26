@@ -12,4 +12,12 @@ public class Car {
     public int getSizeCar() {
         return sizeCar;
     }
+
+    @Override
+    public String toString() {
+        return "Car{"
+                + "sizeCar=" + sizeCar
+                + ", model='" + model + '\''
+                + '}';
+    }
 }

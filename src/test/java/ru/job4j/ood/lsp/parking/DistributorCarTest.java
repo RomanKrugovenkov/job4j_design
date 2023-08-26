@@ -3,8 +3,6 @@ package ru.job4j.ood.lsp.parking;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +20,7 @@ class DistributorCarTest {
         var carList = List.of(car1, car2, car3, car4, car5);
         AbstrParking passParking = new PassengerParking(4);
         AbstrParking cargoParking = new CargoParking(2);
-        var parkingList = List.of(passParking, cargoParking);
+        var parkingList = List.of(cargoParking, passParking);
         DistributorCar distributorCar = new DistributorCar();
         distributorCar.distList(carList, parkingList);
         var arrayPassCars = new Car[]{car1, car4, car4, car5};
