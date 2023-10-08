@@ -15,10 +15,10 @@ class ShopTest {
 
     @Test
     void distributeFoodsToShop() {
-        Food apple = new Food("apple", LocalDate.of(2023, 8, 20), LocalDate.of(2023, 8, 1), 50, 20);
-        Food meat = new Food("meat", LocalDate.of(2023, 8, 26), LocalDate.of(2023, 8, 1), 100, 30);
-        Food bread = new Food("bread", LocalDate.of(2023, 9, 5), LocalDate.of(2023, 8, 15), 150, 15);
-        Food cheese = new Food("cheese", LocalDate.of(2023, 10, 25), LocalDate.of(2023, 8, 15), 200, 10);
+        Food apple = new Food("apple", LocalDate.of(2023, 10, 4), LocalDate.of(2023, 9, 1), 50, 20);
+        Food meat = new Food("meat", LocalDate.of(2023, 11, 7), LocalDate.of(2023, 7, 3), 100, 30);
+        Food bread = new Food("bread", LocalDate.of(2023, 12, 15), LocalDate.of(2023, 8, 5), 150, 15);
+        Food cheese = new Food("cheese", LocalDate.of(2024, 10, 25), LocalDate.of(2023, 10, 1), 200, 10);
         var foodList = List.of(apple, meat, bread, cheese);
         AbstractStore shop = new Shop();
         for (Food food : foodList) {
@@ -26,5 +26,6 @@ class ShopTest {
         }
         var listShop = new ArrayList<>(Arrays.asList(meat, bread));
         assertThat(shop.getStore()).isEqualTo(listShop);
+        shop.store.forEach(System.out::println);
     }
 }
